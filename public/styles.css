@@ -1,0 +1,78 @@
+body {
+  background-color: black;
+}
+
+#datetimepicker1{
+  color: black;
+}
+
+.jumbotron {
+  color: white;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+
+/* #jumbotron-2 {
+  /* background-color: #252529; */
+  background-image: url("https://media-cldnry.s-nbcnews.com/image/upload/newscms/2021_20/3475469/210517-ufo-corbell-2x1-mn-1540.gif");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-blend-mode: darken;
+  height: 25vh;
+} */
+
+#jumbotron-index-summary {
+  background-color: black;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
+#jumbotron-index-report {
+  background-color: black;
+  padding-top: 5px;
+  margin-top: 5px;
+}
+
+#form-container {
+  color: white;
+  max-width: 100%;
+}
+
+#index-container {
+  color: white;
+}
+
+#table-sightings-header {
+  color: white;
+}
+
+#table-sightings-rows {
+  color: gray;
+  background-color: black;
+}
+
+#fa-btn-group {
+  display:flex;
+}
+
+#fa-btn-group-2 {
+  display:flex;
+}
+
+.button-row{
+  display: inline-block;
+  vertical-align: top;
+}
+
+#all-shapes{
+  background-color: black;
+  color: black;
+  text-shadow: none;
+}
+
+#home{
+  background-color: black;
+  color: white;
+  text-shadow: none;
+}
+
