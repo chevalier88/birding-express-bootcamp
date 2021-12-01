@@ -24,7 +24,7 @@ app.use(methodOverride('_method'));
 app.get('/note', (request, response) => {
   console.log('note form get request came in');
 
-  const whenDoneWithQuery = (error, result) => {
+  const getBirdFormQuery = (error, result) => {
     if (error) {
       console.log('Error executing query', error.stack);
       response.status(503).send(result.rows);
@@ -35,8 +35,29 @@ app.get('/note', (request, response) => {
   };
 
   // Query using pg.Pool instead of pg.Client
-  pool.query('SELECT * FROM birds', whenDoneWithQuery);
+  pool.query('SELECT * FROM birds', getBirdFormQuery);
 });
+
+app.post('/note', (request, response) => {
+  console.log('note form post request came in');
+
+  const formData = request.body;
+  console.log(formData);
+
+  const postBirdFormQuery = (error, result) => {
+    if (error) {
+      console.log('Error executing query', error.stack);
+      response.status(503).send(result.rows);
+      return;
+    }
+    console.log(result.rows[0]);
+    response.send('birdwatching form new note submitted!');
+  };
+
+  // Query using pg.Pool instead of pg.Client
+  pool.query('SELECT * FROM birds', postBirdFormQuery);
+});
+
 app.get('/', (request, response) => {
   console.log('request came in');
 
