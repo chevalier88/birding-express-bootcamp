@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <%- include('partials/head', {title: `All Bird Note Sightings`, background:
+    <%- include('partials/head', {title: `Bird Note ${index} Behaviour(s)`,
+    background:
     `https://bestanimations.com/media/birds/1782115527owl-landing-amazing-gif.gif`});
     -%>
 
@@ -143,8 +144,9 @@
     </script>
   </head>
   <body>
-    <%- include('partials/navbar-header', {header: `All Bird Notes`, subheader:
-    `Total No. of Sightings: ${allSightings.length}`}); -%>
+    <%- include('partials/navbar-header', {header: `Bird Note ${index}
+    Behaviour(s)`, subheader: `Total No. of Behaviours: ${allActions.length}`});
+    -%>
 
     <div class="container" style="max-width: 600px">
       <div class="table-responsive">
@@ -155,44 +157,22 @@
                 #
                 <i class="fa fa-long-arrow-down"></i>
               </th>
-              <th onclick="sortDate(1)">
-                Date
-                <i class="fa fa-long-arrow-down"></i>
-              </th>
-              <th onclick="sortTableAlph(2)">
-                Species
+              <th onclick="sortTableAlph(1)">
+                Action
                 <i class="fa fa-arrows-v"></i>
               </th>
 
-              <th onclick="sortTableNum(4)">
-                Flock Size
-                <i class="fa fa-long-arrow-down"></i>
-              </th>
-              <th onclick="sortTableNum(5)">
-                User ID
-                <i class="fa fa-long-arrow-down"></i>
-              </th>
-              <th>View</th>
               <!-- <th>Edit/Delete</th> -->
             </tr>
           </thead>
           <tbody id="table-sightings-rows">
             <!-- Create an <tr> element for each index in allSightings -->
             <!-- adapted from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach -->
-            <% allSightings.forEach((element, index) => { %>
+            <% allActions.forEach((element, index) => { %>
             <tr>
               <td><%= element.id %></td>
-              <td><%= element.date %></td>
-              <td><%= element.name %></td>
-              <td><%= element.flock_size %></td>
-              <td><%= element.user_id %></td>
-              <td>
-                <a href="/note/<%= element.id %>">
-                  <div>
-                    <i class="fa fa-link" aria-hidden="true"></i>
-                  </div>
-                </a>
-              </td>
+              <td><%= element.action %></td>
+
               <!-- <td style="white-space: nowrap">
                 <div
                   class="btn-group"

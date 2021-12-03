@@ -32,12 +32,37 @@
     <div class = "container jumbotron vertical-center" style="max-width: 600px" id = "jumbotron-index-report">
       <strong class = "container text-center">Appearance:</strong>
       <p><%= noteIndex.appearance%></p>
-    </div> 
-    <div class = "container jumbotron vertical-center" style="max-width: 600px" id = "jumbotron-index-report">
+
+    <!-- <div class = "container jumbotron vertical-center" style="max-width: 600px" id = "jumbotron-index-report">
       <strong class = "container text-center">Behaviour:</strong>
       <p><%= noteIndex.behaviour %></p>
-    </div> 
-
+    </div>  -->
+      <form action="/note/<%= noteIndex.id %>/comment" method="POST">
+        <div class="form-group">
+          <label for="comment">Comments</label>
+          <textarea class="form-control" id="comment" name="comment" rows="3"></textarea>
+        </div>
+        <div class="col text-center">
+          <input 
+            class = "btn btn-primary btn-lg text-center"
+            id = "submit-button"
+            type="submit" 
+            value="Submit" />
+        </div>
+      </form>
+    <br><br>
+    <div class="col text-center"> 
+      <a href = "/note/<%= noteIndex.id %>/comments">
+      Show All Of This Entry's Comments 
+      </a>
+    </div>
+    <br>
+    <div class="col text-center"> 
+      <a href = "/note/<%= noteIndex.id %>/behaviours">
+      Show All Of This Entry's Behaviours 
+      </a>
+    </div>
+    <br> 
     <%- include('partials/footer'); -%>
   </body>
 </html>

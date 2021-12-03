@@ -163,21 +163,51 @@ app.post('/note', (request, response) => {
   const speciesId = formData.species_id;
 
   console.log(cookieUserId);
-  // response.send(formData);
+
   const postBirdFormQuery = `
-  INSERT INTO birds (date, behaviour, flock_size, appearance, user_id, species_id)
-  VALUES ('${date}', '${behaviour}', ${flockSize}, '${appearance}', ${cookieUserId}, ${speciesId});
+  INSERT INTO birds (date, flock_size, appearance, user_id, species_id)
+  VALUES ('${date}', ${flockSize}, '${appearance}', ${cookieUserId}, ${speciesId})
+  returning id;
   `;
   console.log(postBirdFormQuery);
   const postBirdFormQueryResult = (error, result) => {
     if (error) {
       console.log('Error executing query', error.stack);
       response.status(503).send(result);
-      return;
-    }
-    console.log(result);
+    } else {
+      console.log('printing result.rows...');
+      console.log(result.rows);
+      console.log('printing result.rows[0] ...');
 
-    response.redirect('/');
+      console.log(result.rows[0]);
+      const noteId = result.rows[0].id;
+
+      formData.behaviour.forEach((element) => {
+        const behaviourIdQuery = `SELECT id FROM behaviour WHERE action = '${element}'`;
+
+        pool.query(behaviourIdQuery, (behaviourIdQueryError, behaviourIdQueryResult) => {
+          if (behaviourIdQueryError) {
+            console.log('error', behaviourIdQueryError);
+          } else {
+            console.log('behaviour id:', behaviourIdQueryResult.rows);
+            const behaviourId = behaviourIdQueryResult.rows[0].id;
+            const behaviourData = [noteId, behaviourId];
+
+            const notesBehaviourEntry = 'INSERT INTO notes_behaviour (notes_id, behaviour_id) VALUES ($1, $2)';
+
+            pool.query(notesBehaviourEntry, behaviourData, (notesBehaviourEntryError, notesBehaviourEntryResult) => {
+              if (notesBehaviourEntryError) {
+                console.log('error', notesBehaviourEntryError);
+              } else {
+                console.log('printing Behaviour Entry Results...');
+                console.log(notesBehaviourEntryResult);
+              }
+            });
+          }
+        });
+      });
+      response.redirect('/');
+    }
   };
 
   // Query using pg.Pool instead of pg.Client
@@ -194,7 +224,14 @@ app.get('/note/:id', (request, response) => {
 
   // inner join to get all the deets from the 3 tables
   const getBirdNoteIndexQuery = `
-  SELECT birds.id, birds.flock_size, birds.date, birds.appearance, birds.behaviour, users.email, species.name AS species FROM birds INNER JOIN users ON birds.user_id = users.id INNER JOIN species ON species.id = birds.species_id WHERE birds.id = ${request.params.id}`;
+  SELECT birds.id, birds.flock_size, birds.date, birds.appearance, birds.behaviour, users.email, species.name 
+  AS species 
+  FROM birds 
+  INNER JOIN users 
+  ON birds.user_id = users.id 
+  INNER JOIN species 
+  ON species.id = birds.species_id 
+  WHERE birds.id = ${request.params.id}`;
   console.log(getBirdNoteIndexQuery);
 
   const whenDoneWithQuery = (error, result) => {
@@ -208,7 +245,6 @@ app.get('/note/:id', (request, response) => {
       noteIndex: {
         id: result.rows[0].id,
         date: result.rows[0].date,
-        behaviour: result.rows[0].behaviour,
         flock_size: result.rows[0].flock_size,
         appearance: result.rows[0].appearance,
         species: result.rows[0].species,
@@ -255,6 +291,117 @@ app.get('/', (request, response) => {
   } else {
     response.status(403).send('sorry, please log in!');
   }
+});
+
+// 3.POCE.9: Bird watching comments
+app.post('/note/:id/comment', (req, res) => {
+  const { userId } = req.cookies;
+
+  const notesId = req.params.id;
+  console.log(notesId);
+  const text = req.body.comment;
+  console.log(text);
+
+  const addCommentQuery = 'INSERT INTO comments (text, notes_id, user_id) VALUES ($1, $2, $3)';
+  const inputData = [`'${text}'`, notesId, userId];
+
+  pool.query(addCommentQuery, inputData, (addCommentQueryError, addCommentQueryResult) => {
+    if (addCommentQueryError) {
+      console.log('error', addCommentQueryError);
+    } else {
+      console.log('done');
+      res.redirect(`/note/${notesId}/comments`);
+    }
+  });
+});
+
+app.get('/note/:id/comments', (request, response) => {
+  console.log('indiv note all comments request came in');
+
+  console.log(request.params.id);
+
+  // const getBirdNoteIndexQuery = `
+  // SELECT * FROM birds WHERE id=${request.params.id};`;
+
+  // inner join to get all the deets from the 3 tables
+  const getBirdNoteIndexQuery = `
+  SELECT * FROM comments
+  WHERE notes_id = ${request.params.id};`;
+  console.log(getBirdNoteIndexQuery);
+
+  const whenDoneWithQuery = (error, result) => {
+    if (error) {
+      console.log('Error executing query', error.stack);
+      response.status(503).send(result.rows);
+      return;
+    }
+    const content = {
+      index: request.params.id,
+      allSightings: result.rows,
+    };
+    console.log(content);
+    // response.send(result.rows[0]);
+    response.render('indexAllComments', content);
+  };
+
+  // Query using pg.Pool instead of pg.Client
+  pool.query(getBirdNoteIndexQuery, whenDoneWithQuery);
+});
+
+app.get('/note/:id/behaviours', (request, response) => {
+  console.log('indiv note all behaviours request came in');
+
+  console.log(request.params.id);
+
+  // const getBirdNoteIndexQuery = `
+  // SELECT * FROM birds WHERE id=${request.params.id};`;
+
+  // inner join to get all the deets from the 2 tables
+  const firstQuery = `
+  SELECT notes_behaviour.id, notes_behaviour.behaviour_id, behaviour.id, behaviour.action
+  FROM notes_behaviour
+  INNER JOIN behaviour
+  ON behaviour.id = notes_behaviour.behaviour_id
+  WHERE notes_behaviour.notes_id = ${request.params.id};
+  `;
+  const whenDoneWithFirstQuery = (error, result) => {
+    if (error) {
+      console.log('Error executing query', error.stack);
+      response.status(503).send(result.rows);
+      return;
+    }
+    const content = {
+      index: request.params.id,
+      allActions: result.rows,
+    };
+    console.log(content);
+    // response.send(result.rows);
+    response.render('indexAllBehaviours', content);
+  };
+  pool.query(firstQuery, whenDoneWithFirstQuery);
+
+  // const getBirdNoteIndexQuery = `
+  // SELECT * FROM comments
+  // WHERE notes_id = ${request.params.id};`;
+  // console.log(getBirdNoteIndexQuery);
+
+  // const whenDoneWithQuery = (error, result) => {
+  //   if (error) {
+  //     console.log('Error executing query', error.stack);
+  //     response.status(503).send(result.rows);
+  //     return;
+  //   }
+  //   const content = {
+  //     index: request.params.id,
+  //     allSightings: result.rows,
+  //   };
+  //   console.log(content);
+  //   // response.send(result.rows[0]);
+  //   response.render('indexAllBehaviours', content);
+  // };
+
+  // // Query using pg.Pool instead of pg.Client
+  // pool.query(getBirdNoteIndexQuery, whenDoneWithQuery);
 });
 
 app.listen(PORT);
