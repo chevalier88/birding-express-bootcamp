@@ -2,7 +2,7 @@
 <html>
   <head>
     <%- include('partials/head', {title: `All Bird Note Sightings`, background:
-    `https://thumbs.gfycat.com/BitesizedUnhealthyGuanaco-size_restricted.gif`});
+    `https://bestanimations.com/media/birds/1782115527owl-landing-amazing-gif.gif`});
     -%>
 
     <script>
@@ -160,7 +160,7 @@
                 <i class="fa fa-long-arrow-down"></i>
               </th>
               <th onclick="sortTableAlph(2)">
-                Appearance
+                Species
                 <i class="fa fa-arrows-v"></i>
               </th>
               <th onclick="sortTableAlph(3)">
@@ -169,6 +169,10 @@
               </th>
               <th onclick="sortTableNum(4)">
                 Flock Size
+                <i class="fa fa-long-arrow-down"></i>
+              </th>
+              <th onclick="sortTableNum(5)">
+                User ID
                 <i class="fa fa-long-arrow-down"></i>
               </th>
               <th>View</th>
@@ -182,9 +186,10 @@
             <tr>
               <td><%= element.id %></td>
               <td><%= element.date %></td>
-              <td><%= element.appearance %></td>
+              <td><%= element.name %></td>
               <td><%= element.behaviour %></td>
               <td><%= element.flock_size %></td>
+              <td><%= element.user_id %></td>
               <td>
                 <a href="/note/<%= element.id %>">
                   <div>

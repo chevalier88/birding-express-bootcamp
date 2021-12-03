@@ -47,8 +47,6 @@
               required
             />
           </div>
-        </div>
-        <div class="row">
           <div class="form-group col-sm-6 col-md-6">
             <label for="flock_size">Flock Size</label>
             <input
@@ -62,6 +60,19 @@
           </div>
         </div>
         <div class="form-group">
+          <div class="col">
+            <div class="col justify-content-start">
+              <label for="species_id">Species: </label>
+              <select class="form-control" name="species_id" id="species_id">
+                <% species.forEach((type) => { %>
+                <option value="<%= type.id %>"><%= type.name %></option>
+                <% }) %>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="form-group">
           <label for="behaviour">Behaviour:</label>
           <input
             type="text"
@@ -71,6 +82,57 @@
             placeholder="mynah harassing people at Plaza Sing"
             required
           />
+        </div> -->
+        <p>Behaviour:</p>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="behaviour"
+            value="bathing"
+            id="behaviour"
+          />
+          <label class="form-check-label" for="behaviour"> Bathing </label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="behaviour"
+            value="feeding"
+            id="behaviour"
+          />
+          <label class="form-check-label" for="behaviour"> Feeding </label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="behaviour"
+            value="walking"
+            id="behaviour"
+          />
+          <label class="form-check-label" for="behaviour"> Walking </label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="behaviour"
+            value="resting"
+            id="behaviour"
+          />
+          <label class="form-check-label" for="behaviour"> Resting </label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="behaviour"
+            value="harassing"
+            id="behaviour"
+          />
+          <label class="form-check-label" for="behaviour"> Harassing </label>
         </div>
         <div class="col text-center">
           <input
