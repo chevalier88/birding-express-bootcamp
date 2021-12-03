@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include('partials/head', {title: `Birdwatching, Index
+    ${noteIndex.id}`, background: `https://c.tenor.com/v3wbkJZ3r14AAAAC/attack-birds.gif`}); -%> 
+  <body>
+    <%- include('partials/navbar-header', {header: `Birdwatching  Report`,
+    subheader: `ID No. ${noteIndex.id}`}); -%>
+    <br><br>
+   
+    <div class="container" id="index-container" style="max-width: 600px">
+     
+      <div class="row">
+        <div class="col-sm-6 col-md-6">
+          Date/Time of Sighting: <%= noteIndex.date %>
+        </div>
+        <div class="col-sm-6 col-md-6">
+          Flock Size: <%= noteIndex.flock_size%>
+        </div>
+      </div>
+    </div>
+
+    <div class = "container jumbotron vertical-center" style="max-width: 600px" id = "jumbotron-index-report">
+      <strong class = "container text-center">Appearance:</strong>
+      <p><%= noteIndex.appearance%></p>
+    </div> 
+    <div class = "container jumbotron vertical-center" style="max-width: 600px" id = "jumbotron-index-report">
+      <strong class = "container text-center">Behaviour:</strong>
+      <p><%= noteIndex.behaviour %></p>
+    </div> 
+
+    <%- include('partials/footer'); -%>
+  </body>
+</html>
